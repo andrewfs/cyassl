@@ -169,5 +169,29 @@ STATIC INLINE void xorbuf(void* buf, const void* mask, word32 count)
         for (i = 0; i < count; i++) b[i] ^= m[i];
     }
 }
+
+
+/* Make sure compiler doesn't skip */
+STATIC INLINE void ForceZero(const void* mem, word32 len)
+{
+    volatile byte* z = (volatile byte*)mem;
+
+    while (len--) *z++ = 0;
+}
+
+
+/* check all length bytes for equality, return 0 on success */
+STATIC INLINE int ConstantCompare(const byte* a, const byte* b, int length)
+{
+    int i;
+    int compareSum = 0;
+
+    for (i = 0; i < length; i++) {
+        compareSum |= a[i] ^ b[i];
+    }
+
+    return compareSum;
+}
+
 #undef STATIC
 
